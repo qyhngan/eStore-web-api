@@ -1,0 +1,73 @@
+﻿@model CartDetails
+
+@{
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+}
+
+<h2>Shopping Cart</h2>
+
+<p>
+    <a asp-action="Product">Continue shopping</a>
+</p>
+
+@{
+    if (TempData["Success"] != null)
+    {
+        <p class="alert-success font-weight-bold">@TempData["Success"]</p>
+    }
+    else
+    {
+        
+        if (Model.CartItems.Count == 0)
+        {
+            <p class="font-weight-bold alert-danger">Your cart is empty</p>
+        }
+        else
+        {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CartItems)
+                {
+                    <tr>
+                        <td>@item.Product.ProductId</td>
+                        <td>@item.Product.ProductName</td>
+                        <td>@item.Product.UnitPrice</td>
+                        <td>
+                            <form asp-controller="Cart" asp-action="UpdateQuantity" method="post">
+                                <input type="hidden" name="productId" value="@item.Product.ProductId" />
+                                <input type="number" name="quantity" value="@item.Quantity" />
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form asp-controller="Cart" asp-action="RemoveItem" method="post">
+                                <input type="hidden" name="productId" value="@item.Product.ProductId" />
+                                <button type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+            if (TempData["Error"] != null)
+        {
+                <p class="alert-danger font-weight-bold">@TempData["Error"]</p>
+        }
+
+        <p>
+            <a asp-action="Checkout">Check out</a>
+        </p>
+        }
+    }
+}
+
